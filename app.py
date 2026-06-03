@@ -11,12 +11,17 @@ load_dotenv()
 app = Flask(__name__)
 
 
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
-
 # Configuration
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-secret-key-here')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://username:password@localhost/student_crud')
+
+# Use SQLite by default if DATABASE_URL is not provided
+# Use /tmp directory on Vercel because the rest of the filesystem is read-only
+if os.environ.get('VERCEL') == '1':
+    default_db = 'sqlite:////tmp/student_crud.db'
+else:
+    default_db = 'sqlite:///student_crud.db'
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', default_db)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize database

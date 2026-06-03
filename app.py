@@ -34,6 +34,11 @@ try:
 except Exception as e:
     print(f"Failed to connect to database or create tables: {e}")
 
+@app.route('/favicon.ico')
+@app.route('/favicon.png')
+def favicon():
+    return '', 204
+
 @app.route('/')
 def index():
     """Display all students"""
